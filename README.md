@@ -1,10 +1,9 @@
-# Tietokantasovelluksen esittelysivu
+# Pitter-patter
+Aineopintojen harjoitustyö: tietokantasovellus, periodi IV 2016-17
 
-Yleisiä linkkejä:
-
-* [Linkki sovellukseeni](https://www.cs.helsinki.fi)
-* [Linkki dokumentaatiooni](https://www.github.com)
+* [Linkki sovellukseen](https://pyykkomi.cs.helsinki.fi/pitterpatter/)
+* [Dokumentaatio]()
 
 ## Työn aihe
 
-Laita tähän aihekuvaus tai [linkki valmiiseen aiheeseen](http://advancedkittenry.github.io/suunnittelu_ja_tyoymparisto/aiheet/Pokemon-kanta.html) 
+Simppeli mikroblogipalvelu.
