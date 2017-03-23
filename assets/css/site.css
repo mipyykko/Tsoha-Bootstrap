@@ -1,10 +1,55 @@
 #main-container{
-  max-width: 1200px;
-  padding: 10px 25px;
-  margin: 0px auto;
+    max-width: 1200px;
+    padding: 10px 25px;
+    margin: 0px auto;
 }
 
 .navbar .container-fluid{
-  max-width: 1200px;
-  margin: 0px auto;
+    max-width: 1200px;
+    margin: 0px auto;
+}
+
+
+#required {
+    color: #e32;
+}
+
+#registration {
+    left: 50%;
+    width: 800px;
+    margin: 0px auto;
+}
+
+#form-column-left {
+    float: left;
+    width: 48%;
+    display: block;
+    margin: 20px auto;
+}
+
+#form-column-right {
+    float: right;
+    width: 48%;
+    display: block;
+    margin: 20px auto;
+}
+
+#userpage {
+    left: 50%;
+    width: 800px;
+    margin: 0px auto;
+}
+
+#user-sidebar {
+    float: left;
+    width: 30%;
+    display: block;
+    margin: 20px auto;
+}
+
+#user-content {
+    float: right;
+    width: 68%;
+    display: block;
+    margin: 20px auto;
 }

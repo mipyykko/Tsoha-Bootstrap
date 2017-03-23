@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="registration">
+    <h2>Rekisteröityminen</h2>
+    <span>Hei! Olet vain yhden klikkauksen päässä rekisteröitymisestä. Täytä tietosi alle. Vain tähdellä merkityt kentät ovat pakollisia tässä vaiheessa!</span>
+    <form id="registration_form" action="" method="post">
+        <div id="form-column-left">
+            <label for="username"><span>Käyttäjätunnus<span class="required">*</span></span></label>
+            <small id="formhelp" class="form-text text-muted">Et voi vaihtaa tätä myöhemmin.</small>
+            <input type="text" size="16" maxlength="32" name="username" class="form-control" placeholder="Käyttäjätunnus" autofocus />
+            <label for="password"><span>Salasana<span class="required">*</span></span></label>
+            <small id="formHelp" class="form-text text-muted">Pituus 8-32 merkkiä. Voit vaihtaa tämän myöhemmin.</small>
+            <input type="password" size="16" maxlength="32" name="password" class="form-control" placeholder="Salasana" />
+            <label for="passwordcheck"><span>Salasana uudelleen<span class="required">*</span></span></label>
+            <input type="password" size="16" maxlength="32" name="passwordcheck" class="form-control" placeholder="Salasana uudelleen" />
+            <label for="email"><span>Sähköpostiosoite</span></label>
+            <small id="formHelp" class="form-text text-muted">Voit vaihtaa tämän myöhemmin.</small>
+            <input type="text" size="32" maxlength="64" name="email" class="form-control" placeholder="Sähköpostiosoite" />
+        </div>
+        <div id="form-column-right">
+            <label for="realname"><span>Nimi</span></label>
+            <small id="formHelp" class="form-text text-muted">Näkyy omalla profiilisivullasi.</small>
+            <input type="text" size="32" maxlength="64" name="realname" class="form-control" placeholder="Nimi" />
+            <label for="description"><span>Kuvaus</span></label>
+            <small id="formHelp" class="form-text text-muted">Näkyy omalla profiilisivullasi.</small>
+            <textarea maxlength="255" cols="32" rows="5" name="description" class="form-control" placeholder="Kuvaus"></textarea>
+            <button class="btn btn-primary" type="submit">Rekisteröidy!</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
