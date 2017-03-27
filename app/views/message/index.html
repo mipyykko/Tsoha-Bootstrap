@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-sm-3"> <!-- vasen paneeli -->
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <!-- <img src="" alt="kuva" /> -->
+                <p><strong>@Käyttäjä</strong></p>
+                <p><small>oikeanimi</small></p>
+                <p><small>Rekisteröitynyt maaliskuussa 2017</small></p>
+                <div class="row">
+                    <div class="col-xs-3">
+                        <h5><a href="#">0</a><small> viestiä</small></h5>
+                    </div>
+                    <div class="col-xs-4">
+                        <h5><a href="#">0</a><small> seurattu</small></h5>
+                    </div>
+                    <div class="col-xs-5">
+                        <h5><a href="#">0</a><small> seuraajaa</small></h5>
+                    </div>
+                </div>
+                <p><span>Kuvaus käyttäjästä joka ulottuu ehkä seuraavalle riville ja niin edelleen ja edelleen</span></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6"> <!-- keskiosio -->
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <div class="media-body">
+                    <form action="{{base_path}}/message/index.html" method="post" id="sentmessage"> 
+                       <div class="form-group has-feedback">
+                            <input type="text" class="form-control" id="message">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body"> <!-- viestialue -->
+            {% for message in messages %}
+            <div class="media"> <!-- viesti alkaa -->
+                <!--<a class="media-left" href="#">
+                    <img alt="kuva" src="" />
+                </a>-->
+                <div class="media-body">
+                    <h4 class="media-heading">Lähettäjä</h4>
+                    <p>{{message.text | raw}}</p>
+                    <ul class="nav nav-pills nav-pills-custom">
+                        <li>(jaa)</li>
+                        <li>(vastaa)</li>
+                        <li>(tykkää)</li>
+                    </ul>
+                </div>
+            </div> <!-- viesti päättyy -->
+            {% endfor %}
+
+        </div> <!-- viestialue päättyy -->
+
+    </div>
+            
+    <div class="col-sm-3">
+        <div class="panel panel-default panel-custom">
+            <div class="panel-heading"> <!-- jotain -->
+            </div>
+        </div>
+    </div>
+    
+</div>
+{% endblock %}

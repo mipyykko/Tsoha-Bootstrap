@@ -1,5 +1,4 @@
 <?php
-
   class HelloWorldController extends BaseController{
 
     public static function index(){
@@ -8,8 +7,14 @@
     }
 
     public static function sandbox(){
-      // Testaa koodiasi täällä
-      View::make('helloworld.html');
+        $test = User::find(1);
+        $test2 = User::all();
+        $test3 = Message::find(1);
+        $test4 = Message::all();
+        Kint::dump($test);
+        Kint::dump($test2);
+        Kint::dump($test3);
+        Kint::dump($test4);
     }
     
     public static function rekisteroidy() {
