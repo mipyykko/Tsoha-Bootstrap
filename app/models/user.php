@@ -1,7 +1,5 @@
 <?php
 
-use Util;
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -13,8 +11,6 @@ use Util;
  *
  * @author pyykkomi
  */
-require 'app/util/util.php';
-
 class User extends BaseModel {
     public $id, $username, $realname, $password, $description, $email, $administrator,
            $public_profile, $registration_date, $last_seen;
@@ -63,7 +59,7 @@ class User extends BaseModel {
     }
     
     public function getUserinfo($user) {
-        $userinfo = array('registration' => Util::getMonthAsString($user),
+        $userinfo = array('registration' => Util::getMonthAsString($user->registration_date),
                           'posts' => 0,
                           'followed' => 0,
                           'followers' => 0);

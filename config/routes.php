@@ -24,6 +24,10 @@
       MessageController::userindex($username);
   });
   
+  $routes->post('/user/:id', function($id) {
+      MessageController::store();
+  });
+  
   $routes->get('/user/:id', function($id) {
       MessageController::userindex($id);
   });

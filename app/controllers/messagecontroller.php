@@ -5,7 +5,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  * Description of messagecontroller
  *
@@ -20,9 +19,23 @@ class MessageController extends BaseController {
     
     public static function userindex($userid) {
         $user = User::find($userid);
-        $userinfo = User::getUserinfo($user);
+        $userinfo = User::getUserinfo($user); // nää vois pakata myös samaan
         $messages = Message::userMessages($userid);
-        View::make('user/index.html', array('user' => $user, 'messages' => $messages,
+        $messageinfo = Message::getMessageInfo($messages); 
+        View::make('user/index.html', array('user' => $user, 'messageinfo' => $messageinfo,
                                             'userinfo' => $userinfo));
+    }
+    
+    public static function store() {
+        $params = $_POST;
+        $message = new Message(array(
+            'userid' => $params['userid'],
+            'replyid' => $params['replyid'],
+            'text' => $params['text'],
+            'sent' => date('Y-m-d H:i:s'),
+            'public_message' => $params['public_message']
+        ));
+        $message->save();
+        Redirect::to('/user/'.$message->userid);
     }
 }

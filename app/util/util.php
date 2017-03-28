@@ -26,7 +26,7 @@ class Util {
         $year = date("Y", strtotime($timestamp));
         $date = "";
         if ((int)$month > 0 & (int)$month <= 12) {
-            $date = $this->months[(int)$month]."ta ";
+            $date = self::$months[(int)$month]."sta ";
         }
         $date .= $year;
         return $date;

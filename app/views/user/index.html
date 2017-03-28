@@ -7,7 +7,9 @@
                 <!-- <img src="" alt="kuva" /> -->
                 <p><strong>{{user.username}}</strong></p>
                 <p><small>{{user.realname}}</small></p>
-                <p><small>{{userinfo.registration}}</small></p>
+                {% if userinfo.registration %}
+                <p><small>Käyttäjä {{userinfo.registration}}</small></p>
+                {% endif %}
                 <div class="row">
                     <div class="col-xs-3">
                         <h5><a href="#">{{userinfo.messages}}</a><small> viestiä</small></h5>
@@ -28,23 +30,26 @@
         <div class="panel panel-info">
             <div class="panel-heading">
                 <div class="media-body">
-                    <form action="{{base_path}}/message/index.html" method="post" id="sentmessage"> 
-                       <div class="form-group has-feedback">
-                            <input type="text" class="form-control" id="message">
+                    <form action="{{base_path}}/user/{{user.id}}" method="post" id="sentmessage"> 
+                        <input type="hidden" name="userid" value="{{user.id}}" />
+                        <input type="hidden" name="replyid" value="0" />
+                        <input type="hidden" name="public_message" value="true" />
+                        <div class="form-group has-feedback">
+                            <input type="text" class="form-control" name="text" id="text">
                         </div>
                     </form>
                 </div>
             </div>
         </div>
         <div class="panel-body"> <!-- viestialue -->
-            {% for message in messages %}
+            {% for messagedata in messageinfo %}
             <div class="media"> <!-- viesti alkaa -->
                 <!--<a class="media-left" href="#">
                     <img alt="kuva" src="" />
                 </a>-->
                 <div class="media-body">
-                    <h4 class="media-heading">Lähettäjä</h4>
-                    <p>{{message.text | raw}}</p>
+                    <h4 class="media-heading">{{messagedata.user.realname}}</h4>
+                    <p>{{messagedata.message.text | raw}}</p>
                     <ul class="nav nav-pills nav-pills-custom">
                         <li>(jaa)</li>
                         <li>(vastaa)</li>

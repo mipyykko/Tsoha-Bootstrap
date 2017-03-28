@@ -46,7 +46,7 @@ class Message extends BaseModel {
     }
 
     public static function userMessages($userid) {
-        $query = DB::connection()->prepare('SELECT * FROM Messages WHERE userid = :userid');
+        $query = DB::connection()->prepare('SELECT * FROM Messages WHERE userid = :userid ORDER BY sent DESC');
         $query->execute(array('userid' => $userid));
         $rows = $query->fetchAll();
         $messages = array();
@@ -56,6 +56,32 @@ class Message extends BaseModel {
         }
         
         return $messages;
+    }
+    
+    public function save() {
+        $query = DB::connection()->prepare('INSERT INTO Messages (userid, text, sent, public_message) VALUES (:userid, :text, :sent, :public_message) RETURNING id');        
+        $query->execute(array('userid' => $this->userid, 'text' => $this->text,
+                              'sent' => $this->sent, 'public_message' => $this->public_message));
+        $row = $query->fetch();
+        $this->id = $row['id'];
+        $this->replyid = $row['id'];
+        
+        // Ei kovin kaunista mutta nyt on näin
+        $query = DB::connection()->prepare('UPDATE Messages SET replyid = :replyid WHERE id = :id');
+        $query->execute(array('id' => $this->id, 'replyid' => $this->replyid));
+    }
+    
+    public static function getMessageinfo($messages) {
+        $messageinfo = array();
+        $users = array();
+        foreach ($messages as $message) {
+            if (! isset($users[$message->userid])) {
+                $users[$message->userid] = User::find($message->userid);
+            }
+            $messageinfo[] = array('message' => $message, 'user' => $users[$message->userid]);
+        }
+        
+        return $messageinfo;
     }
     
     private function getMessage($row, $parse) {
@@ -75,8 +101,8 @@ class Message extends BaseModel {
             $tags = array();
             \preg_match_all("/(#[\p{Pc}\p{N}\p{L}\p{Mn}]+)/u", $message, $tags);
             if ($tags) {
-                foreach ($tags[1] as $tag) {
-                    $message = \str_replace($tag, "<a href=\"tags/" . \substr($tag, 1) . "\">".$tag."</a>", $message);
+                foreach ($tags[1] as $tag) { // TODO:fix
+                    $message = \str_replace($tag, "<a href=\"/tags/" . \substr($tag, 1) . "\">".$tag."</a>", $message);
                 }
             }
         }
