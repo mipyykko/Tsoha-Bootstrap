@@ -27,7 +27,7 @@ class MessageController extends BaseController {
                                             'userinfo' => $userinfo));
     }
 
-        public function tagindex($text) {
+    public function tagindex($text) {
         $tag = Tag::findByText($text);
         
         if ($tag) {

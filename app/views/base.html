@@ -42,11 +42,17 @@
                         <li><a href="{{base_path}}">Etusivu</a></li>
                     </ul>
                     <div class="nav navbar-nav pull-right">
+                        {% if loggedin %}
+                        <ul class="nav navbar-nav">
+                            <li><a href="{{base_path}}/settings">{{user.username}}</a></li>
+                        </ul>
+                        {% else %}
                         <form class="form-inline">
                             <input class="form-control" type="text" placeholder="Käyttäjätunnus" />
                             <input class="form-control" type="password" placeholder="Salasana" />
                             <button class="btn btn-outline-success" type="submit">Kirjaudu</button>
                         </form>
+                        {% endif %}
                     </div>
                 </div>
 
