@@ -27,8 +27,8 @@
     </div>
 
     <div class="col-sm-6"> <!-- keskiosio -->
-        <div class="panel panel-info">
-            <div class="media-body">
+        <!--<div class="panel"> --> <!-- tää seuraavaksi, tsekkaa tyylit --> 
+            <div class="media-body"> <!-- viestin kirjoitus -->
                 <div class="form-group has-feedback">
                     <form action="{{base_path}}/user/{{user.id}}" method="post" id="sentmessage"> 
                         <input type="hidden" name="userid" value="{{user.id}}" />
@@ -38,7 +38,9 @@
                         <button class="btn btn-primary" type="submit">Lähetä</button>
                     </form>
                 </div>
-            </div>
+            </div> <!-- -->
+        <!-- </div> -->
+        <div class="panel panel-info">
             <div class="panel-heading">
                 <div class="media-body">
                     <form action="{{base_path}}/user/{{user.id}}/search" method="post" id="search">
@@ -49,35 +51,34 @@
                     </form>
                 </div>
             </div>
+            <div class="panel-body"> <!-- viestialue -->
+                {% for messagedata in messageinfo %}
+                <div class="media"> <!-- viesti alkaa -->
+                    <!--<a class="media-left" href="#">
+                        <img alt="kuva" src="" />
+                    </a>-->
+                    <div class="media-body">
+                        <h4 class="media-heading">{{messagedata.user.realname}}</h4>
+                        <p>{{messagedata.message.text | raw}}</p>
+                        <ul class="nav nav-pills nav-pills-custom">
+                            <li><a href="#"><span class="glyphicon glyphicon-share-alt"></span></a></li>
+                            <li><a href="#"><span class="glyphicon glyphicon-retweet"></span></a></li>
+                            <li><a href="#"><span class="glyphicon glyphicon-star"></span></a></li>
+                        </ul>
+                    </div>
+                </div> <!-- viesti päättyy -->
+                {% endfor %}
+
+            </div> <!-- viestialue päättyy -->
         </div>
-        <div class="panel-body"> <!-- viestialue -->
-            {% for messagedata in messageinfo %}
-            <div class="media"> <!-- viesti alkaa -->
-                <!--<a class="media-left" href="#">
-                    <img alt="kuva" src="" />
-                </a>-->
-                <div class="media-body">
-                    <h4 class="media-heading">{{messagedata.user.realname}}</h4>
-                    <p>{{messagedata.message.text | raw}}</p>
-                    <ul class="nav nav-pills nav-pills-custom">
-                        <li><a href="#"><span class="glyphicon glyphicon-share-alt"></span></a></li>
-                        <li><a href="#"><span class="glyphicon glyphicon-retweet"></span></a></li>
-                        <li><a href="#"><span class="glyphicon glyphicon-star"></span></a></li>
-                    </ul>
-                </div>
-            </div> <!-- viesti päättyy -->
-            {% endfor %}
-
-        </div> <!-- viestialue päättyy -->
-
     </div>
-            
+
     <div class="col-sm-3">
         <div class="panel panel-default panel-custom">
             <div class="panel-heading"> <!-- jotain -->
             </div>
         </div>
     </div>
-    
+
 </div>
 {% endblock %}
