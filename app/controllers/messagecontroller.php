@@ -14,7 +14,8 @@ class MessageController extends BaseController {
 
     public static function index() {
         $messages = Message::all();
-        View::make('message/index.html', array('messages' => $messages));
+        $messageinfo = Message::getMessageInfo($messages);
+        View::make('message/index.html', array('messageinfo' => $messageinfo));
     }
     
     public static function userindex($userid) {
@@ -34,6 +35,7 @@ class MessageController extends BaseController {
             $messageinfo = Message::getMessageInfo($messages);
             View::make('tag/index.html', array('messageinfo' => $messageinfo, 'tag' => $tag));
         } else {
+            $tag = array('text' => $text);
             View::make('tag/index.html', array('tag' => $tag));
         }
     }
@@ -49,5 +51,10 @@ class MessageController extends BaseController {
         ));
         $message->save();
         Redirect::to('/user/'.$message->userid);
+    }
+    
+    public static function search() {
+        // TODO
+        Redirect::to('/');
     }
 }

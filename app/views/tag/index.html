@@ -25,6 +25,7 @@
 
     <div class="col-sm-6"> <!-- keskiosio -->
         <div class="panel-body"> <!-- viestialue -->
+            {% if messageinfo %}
             {% for messagedata in messageinfo %}
             <div class="media"> <!-- viesti alkaa -->
                 <!--<a class="media-left" href="#">
@@ -41,7 +42,9 @@
                 </div>
             </div> <!-- viesti päättyy -->
             {% endfor %}
-
+            {% else %}
+            <div><h2>Ei viestejä tagilla #{{tag.text}}</h2></div>
+            {% endif %}
         </div> <!-- viestialue päättyy -->
 
     </div>

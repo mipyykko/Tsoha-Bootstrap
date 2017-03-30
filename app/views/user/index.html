@@ -28,14 +28,22 @@
 
     <div class="col-sm-6"> <!-- keskiosio -->
         <div class="panel panel-info">
-            <div class="panel-heading">
-                <div class="media-body">
+            <div class="media-body">
+                <div class="form-group has-feedback">
                     <form action="{{base_path}}/user/{{user.id}}" method="post" id="sentmessage"> 
                         <input type="hidden" name="userid" value="{{user.id}}" />
                         <input type="hidden" name="replyid" value="0" />
                         <input type="hidden" name="public_message" value="true" />
+                        <textarea class="form-control" name="text" id="text" placeholder="Uusi viesti..."></textarea>
+                        <button class="btn btn-primary" type="submit">Lähetä</button>
+                    </form>
+                </div>
+            </div>
+            <div class="panel-heading">
+                <div class="media-body">
+                    <form action="{{base_path}}/user/{{user.id}}/search" method="post" id="search">
                         <div class="form-group has-feedback">
-                            <input type="text" class="form-control" name="text" id="text">
+                            <input type="text" class="form-control" name="search" id="search">
                         </div>
                     </form>
                 </div>

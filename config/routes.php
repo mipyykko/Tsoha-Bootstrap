@@ -1,7 +1,7 @@
 <?php
 
   $routes->get('/', function() {
-    HelloWorldController::index();
+    MessageController::index();
   });
 
   $routes->get('/hiekkalaatikko', function() {
@@ -18,6 +18,10 @@
   
   $routes->get('/message', function() {
       MessageController::index();
+  });
+  
+  $routes->post('/search', function() {
+      MessageController::search();
   });
   
   $routes->get('/username/:username', function($username) {

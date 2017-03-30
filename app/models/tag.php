@@ -25,7 +25,7 @@ class Tag extends BaseModel {
         $row = $query->fetch();
 
         if ($row) {
-            $tag = self::getTag($row);
+            $tag = self::newTag($row);
             return $tag;
         }
 
@@ -38,7 +38,7 @@ class Tag extends BaseModel {
         $row = $query->fetch();
 
         if ($row) {
-            $tag = self::getTag($row);
+            $tag = self::newTag($row);
             return $tag;
         }
 
@@ -48,24 +48,29 @@ class Tag extends BaseModel {
     public function parseAndSave($message) {
         $tags = self::parsetags($message);
 
-        if ($tags) {
-            foreach ($tags as $tag) {
-                $tag = substr($tag, 1);
-                $foundtag = self::findByText($tag);
-                if (! $foundtag) {
-                    $query = DB::connection()->prepare('INSERT INTO Tags (text) VALUES (:text) RETURNING id');
-                    $query->execute(array('text' => $tag));
-                    $row = $query->fetch();
-                    $foundtag = new Tag(array('text' => $tag, 'id' => $row['id']));
-                    
-                }
-                $query = DB::connection()->prepare('INSERT INTO Tagged (tagid, messageid) VALUES (:tagid, :messageid)');
-                $query->execute(array('tagid' => $foundtag->id, 'messageid' => $message->id));
+        if (!$tags) {
+            return;
+        }
+
+        foreach ($tags as $tag) {
+            $tag = substr($tag, 1);
+            $foundtag = self::findByText($tag);
+            if (!$foundtag) {
+                $query = DB::connection()->prepare(
+                        'INSERT INTO Tags (text) VALUES (:text) RETURNING id'
+                );
+                $query->execute(array('text' => $tag));
+                $row = $query->fetch();
+                $foundtag = new Tag(array('text' => $tag, 'id' => $row['id']));
             }
+            $query = DB::connection()->prepare(
+                    'INSERT INTO Tagged (tagid, messageid) VALUES (:tagid, :messageid)'
+            );
+            $query->execute(array('tagid' => $foundtag->id, 'messageid' => $message->id));
         }
     }
 
-    private function getTag($row) {
+    private function newTag($row) {
         $tag = new Tag(array(
             'text' => $row['text'],
             'id' => $row['id']

@@ -5,6 +5,7 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <!-- <img src="" alt="kuva" /> -->
+                <!--
                 <p><strong>@Käyttäjä</strong></p>
                 <p><small>oikeanimi</small></p>
                 <p><small>Rekisteröitynyt maaliskuussa 2017</small></p>
@@ -20,6 +21,7 @@
                     </div>
                 </div>
                 <p><span>Kuvaus käyttäjästä joka ulottuu ehkä seuraavalle riville ja niin edelleen ja edelleen</span></p>
+                -->
             </div>
         </div>
     </div>
@@ -28,23 +30,24 @@
         <div class="panel panel-info">
             <div class="panel-heading">
                 <div class="media-body">
-                    <form action="{{base_path}}/message/index.html" method="post" id="sentmessage"> 
+                    <!-- haku -->
+                    <form action="{{base_path}}/search" method="post" id="search"> 
                        <div class="form-group has-feedback">
-                            <input type="text" class="form-control" id="message">
+                            <input type="text" class="form-control" id="search">
                         </div>
                     </form>
                 </div>
             </div>
         </div>
         <div class="panel-body"> <!-- viestialue -->
-            {% for message in messages %}
+            {% for messagedata in messageinfo %}
             <div class="media"> <!-- viesti alkaa -->
                 <!--<a class="media-left" href="#">
                     <img alt="kuva" src="" />
                 </a>-->
                 <div class="media-body">
-                    <h4 class="media-heading">Lähettäjä</h4>
-                    <p>{{message.text | raw}}</p>
+                    <h4 class="media-heading"><a href="{{base_path}}/user/{{messagedata.user.id}}">{{messagedata.user.realname}}</a></h4>
+                    <p>{{messagedata.message.text | raw}}</p>
                     <ul class="nav nav-pills nav-pills-custom">
                         <li>(jaa)</li>
                         <li>(vastaa)</li>
