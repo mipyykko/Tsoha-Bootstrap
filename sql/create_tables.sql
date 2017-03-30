@@ -22,8 +22,8 @@ CREATE TABLE Messages(
 );
 
 CREATE TABLE Tags(
-    id SERIAL PRIMARY KEY,
-    text varchar(64) NOT NULL
+    text varchar(64) UNIQUE NOT NULL PRIMARY KEY,
+    id SERIAL
 );
 
 CREATE TABLE Tagged(

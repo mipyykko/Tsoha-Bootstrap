@@ -31,3 +31,7 @@
   $routes->get('/user/:id', function($id) {
       MessageController::userindex($id);
   });
+
+  $routes->get('/tag/:tag', function($tag) {
+      MessageController::tagindex($tag);
+  });

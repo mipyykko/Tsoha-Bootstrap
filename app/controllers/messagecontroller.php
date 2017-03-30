@@ -20,12 +20,24 @@ class MessageController extends BaseController {
     public static function userindex($userid) {
         $user = User::find($userid);
         $userinfo = User::getUserinfo($user); // nää vois pakata myös samaan
-        $messages = Message::userMessages($userid);
+        $messages = Message::findByUser($userid);
         $messageinfo = Message::getMessageInfo($messages); 
         View::make('user/index.html', array('user' => $user, 'messageinfo' => $messageinfo,
                                             'userinfo' => $userinfo));
     }
-    
+
+        public function tagindex($text) {
+        $tag = Tag::findByText($text);
+        
+        if ($tag) {
+            $messages = Message::findByTag($tag->id);
+            $messageinfo = Message::getMessageInfo($messages);
+            View::make('tag/index.html', array('messageinfo' => $messageinfo, 'tag' => $tag));
+        } else {
+            View::make('tag/index.html', array('tag' => $tag));
+        }
+    }
+
     public static function store() {
         $params = $_POST;
         $message = new Message(array(

@@ -45,9 +45,22 @@ class Message extends BaseModel {
         return null;
     }
 
-    public static function userMessages($userid) {
+    public static function findByUser($userid) {
         $query = DB::connection()->prepare('SELECT * FROM Messages WHERE userid = :userid ORDER BY sent DESC');
         $query->execute(array('userid' => $userid));
+        $rows = $query->fetchAll();
+        $messages = array();
+        
+        foreach ($rows as $row) {
+            $messages[] = self::getMessage($row, true);
+        }
+        
+        return $messages;
+    }
+    
+    public static function findByTag($id) {
+        $query = DB::connection()->prepare('SELECT * FROM Messages WHERE id IN (SELECT messageid FROM Tagged WHERE tagid = :tagid)');
+        $query->execute(array('tagid' => $id));
         $rows = $query->fetchAll();
         $messages = array();
         
@@ -69,6 +82,8 @@ class Message extends BaseModel {
         // Ei kovin kaunista mutta nyt on näin
         $query = DB::connection()->prepare('UPDATE Messages SET replyid = :replyid WHERE id = :id');
         $query->execute(array('id' => $this->id, 'replyid' => $this->replyid));
+        
+        Tag::parseAndSave($this);
     }
     
     public static function getMessageinfo($messages) {
@@ -102,7 +117,7 @@ class Message extends BaseModel {
             \preg_match_all("/(#[\p{Pc}\p{N}\p{L}\p{Mn}]+)/u", $message, $tags);
             if ($tags) {
                 foreach ($tags[1] as $tag) { // TODO:fix
-                    $message = \str_replace($tag, "<a href=\"/tags/" . \substr($tag, 1) . "\">".$tag."</a>", $message);
+                    $message = \str_replace($tag, "<a href=\"/pitterpatter/tag/" . \substr($tag, 1) . "\">".$tag."</a>", $message);
                 }
             }
         }

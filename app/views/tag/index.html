@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-sm-3"> <!-- vasen paneeli -->
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <!-- <img src="" alt="kuva" /> -->
+                <p><strong>#{{tag.text}}</strong></p>
+                <!--
+                <div class="row">
+                    <div class="col-xs-3">
+                        <h5><a href="#">{{userinfo.messages}}</a><small> viestiä</small></h5>
+                    </div>
+                    <div class="col-xs-4">
+                        <h5><a href="#">{{userinfo.followed}}</a><small> seurattu</small></h5>
+                    </div>
+                    <div class="col-xs-5">
+                        <h5><a href="#">{{userinfo.followers}}</a><small> seuraajaa</small></h5>
+                    </div>
+                </div>
+                <p><span>{{user.description}}</span></p>-->
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6"> <!-- keskiosio -->
+        <div class="panel-body"> <!-- viestialue -->
+            {% for messagedata in messageinfo %}
+            <div class="media"> <!-- viesti alkaa -->
+                <!--<a class="media-left" href="#">
+                    <img alt="kuva" src="" />
+                </a>-->
+                <div class="media-body">
+                    <h4 class="media-heading">{{messagedata.user.realname}}</h4>
+                    <p>{{messagedata.message.text | raw}}</p>
+                    <ul class="nav nav-pills nav-pills-custom">
+                        <li>(jaa)</li>
+                        <li>(vastaa)</li>
+                        <li>(tykkää)</li>
+                    </ul>
+                </div>
+            </div> <!-- viesti päättyy -->
+            {% endfor %}
+
+        </div> <!-- viestialue päättyy -->
+
+    </div>
+            
+    <div class="col-sm-3">
+        <div class="panel panel-default panel-custom">
+            <div class="panel-heading"> <!-- jotain -->
+            </div>
+        </div>
+    </div>
+    
+</div>
+{% endblock %}
