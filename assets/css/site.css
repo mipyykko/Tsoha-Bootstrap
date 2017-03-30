@@ -53,3 +53,7 @@
     display: block;
     margin: 20px auto;
 }
+
+.form-control-feedback{
+	line-height:27px;
+}
