@@ -16,6 +16,14 @@
     HelloWorldController::kayttajasivu();
   });
   
+  $routes->get('/register', function() {
+      UserController::register();
+  });
+  
+  $routes->post('/register', function() {
+      UserController::handleregister();
+  });
+
   $routes->get('/message', function() {
       MessageController::index();
   });

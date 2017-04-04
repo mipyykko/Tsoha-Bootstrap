@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% import "macros/content.html" as content %}
 {% block content %}
 <div class="row">
     <div class="col-sm-3"> <!-- vasen paneeli -->
@@ -40,23 +41,7 @@
                 </div>
             </div>
             <div class="panel-body"> <!-- viestialue -->
-                {% for messagedata in messageinfo %}
-                <div class="media message"> <!-- viesti alkaa -->
-                    <!--<a class="media-left" href="#">
-                        <img alt="kuva" src="" />
-                    </a>-->
-                    <div class="media-body">
-                        <h4 class="media-heading"><a href="{{base_path}}/user/{{messagedata.user.id}}">{{messagedata.user.realname}}</a></h4>
-                        <p>{{messagedata.message.text | raw}}</p>
-                        <ul class="nav nav-pills nav-pills-custom">
-                            <li><a href="#"><span class="glyphicon glyphicon-share-alt"></span></a></li>
-                            <li><a href="#"><span class="glyphicon glyphicon-retweet"></span></a></li>
-                            <li><a href="#"><span class="glyphicon glyphicon-star"></span></a></li>
-                        </ul>
-                    </div>
-                </div> <!-- viesti päättyy -->
-                {% endfor %}
-
+                {{content.user_messages(messageinfo)}}
             </div> <!-- viestialue päättyy -->
         </div>
     </div>

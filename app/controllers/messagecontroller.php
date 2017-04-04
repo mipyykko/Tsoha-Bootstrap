@@ -43,13 +43,17 @@ class MessageController extends BaseController {
     public static function store() {
         $params = $_POST;
         $message = new Message(array(
-            'userid' => $params['userid'],
-            'replyid' => $params['replyid'],
-            'text' => $params['text'],
-            'sent' => date('Y-m-d H:i:s'),
-            'public_message' => $params['public_message']
+                'userid' => $params['userid'],
+                'replyid' => $params['replyid'],
+                'text' => $params['text'],
+                'sent' => date('Y-m-d H:i:s'),
+                'public_message' => $params['public_message']
         ));
-        $message->save();
+        $errors = $message->errors();
+        
+        if (count($errors) == 0) {
+            $message->save();
+        }
         Redirect::to('/user/'.$message->userid);
     }
     
@@ -57,4 +61,5 @@ class MessageController extends BaseController {
         // TODO
         Redirect::to('/');
     }
+
 }

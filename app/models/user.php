@@ -17,6 +17,8 @@ class User extends BaseModel {
     
     public function __construct($attributes) {
         parent::__construct($attributes);
+        $this->validators = array('validate_username', 'validate_password', 'validate_realname',
+                             'validate_description');
     }
     
     public static function all() {
@@ -58,6 +60,23 @@ class User extends BaseModel {
         return null;
     }
     
+    public function save() {
+        $query = DB::connection()->prepare(
+                'INSERT INTO Users (username, realname, password, description, email, public_profile, '.
+                'administrator, registration_date, last_seen) VALUES (:username, :realname, '.
+                ':password, :description, :email, :public_profile, :administrator, :registration_date, '.
+                ':last_seen) RETURNING id');
+        $query->execute(array('username' => $this->username, 'realname' => $this->realname, 
+                              'password' => $this->password, 'description' => $this->description, 
+                              'email' => $this->email, 
+                              'administrator' => $this->administrator ? 't' : 'f',
+                              'public_profile' => $this->public_profile ? 't' : 'f',
+                              'registration_date' => $this->registration_date, 
+                              'last_seen' => $this->last_seen));
+        $row = $query->fetch();
+        $this->id = $row['id'];
+    }
+    
     public function getUserinfo($user) {
         $userinfo = array('registration' => Util::getMonthAsString($user->registration_date),
                           'posts' => 0,
@@ -75,11 +94,55 @@ class User extends BaseModel {
                 'description' => $row['description'],
                 'email' => $row['email'],
                 'administrator' => $row['administrator'],
-                'public_profile' => $row['public_profile'],
+                'public_profile' => $row['public_profile'] == 't' ? true : false,
                 'registration_date' => $row['registration_date'],
                 'last_seen' => $row['last_seen']));
 
         return $user;
     }
     
+    public function validate_username() {
+        $errors = array();
+        
+        if (strlen($this->username) < 4 || 
+            strlen($this->username) > 32) {
+            $errors[] = 'Käyttäjänimen tulee olla 4-32 merkkiä pitkä!';
+        }
+        if (self::findByName($this->username)) {
+            $errors[] = 'Käyttäjänimi on varattu!';
+        }
+        
+        return $errors;
+    }
+    
+    public function validate_password() {
+        $errors = array();
+        
+        if (strlen($this->password) < 8 ||
+            strlen($this->password) > 32) {
+            $errors[] = 'Salasanan tulee olla 4-32 merkkiä pitkä!';
+        }
+        
+        return $errors;
+    }
+    
+    public function validate_realname() {
+        $errors = array();
+        
+        if (strlen($this->realname) > 64) {
+            $errors[] = 'Oikea nimi saa olla korkeintaan 64 merkkiä pitkä!';
+        }
+        
+        return $errors;
+    }
+    
+    public function validate_description() {
+        $errors = array();
+        
+        if (strlen($this->description) > 255) {
+            $errors[] = 'Kuvaus saa olla korkeintaan 255 merkkiä pitkä!';
+        }
+        
+        return $errors;
+    }
 }

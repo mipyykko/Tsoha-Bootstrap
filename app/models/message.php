@@ -17,6 +17,7 @@ class Message extends BaseModel {
 
     public function __construct($attributes) {
         parent::__construct($attributes);
+        $this->validators = array('validate_text');
     }
 
     public static function all() {
@@ -136,6 +137,15 @@ class Message extends BaseModel {
             }
         }
         return $message;
+    }
+    
+    public function validate_text() {
+        $errors = array();
+        if ($this->text == '' || strlen($this->text) < 1) {
+            $errors[] = 'Viestissä ei ole sisältöä!';
+        }
+        
+        return $errors;
     }
 
 }
