@@ -24,6 +24,10 @@
       UserController::handleregister();
   });
 
+  $routes->post('/login', function() {
+      UserController::handlelogin();
+  });
+  
   $routes->get('/message', function() {
       MessageController::index();
   });

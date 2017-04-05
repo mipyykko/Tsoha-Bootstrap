@@ -40,4 +40,17 @@ class UserController extends BaseController {
              View::make('user/register.html', array('user' => $user, 'errors' => $errors));
          }
     }
+    
+    public static function handlelogin() {
+        $params = $_POST;
+        
+        $user = User::auth($params['username'], $params['password']);
+        
+        if (!$user) {
+            MessageController::index();
+        } else {
+            $_SESSION['user'] = $user->id;
+            Redirect::to("/user/".$user->id);
+        }
+    }
 }

@@ -101,6 +101,18 @@ class User extends BaseModel {
         return $user;
     }
     
+    public function auth($username, $password) {
+        $query = DB::connection()->prepare(
+                'SELECT * FROM Users WHERE username = :username AND password = :password LIMIT 1');
+        $query->execute(array('username' => $username, 'password' => $password));
+        $row = $query->fetch();
+        if ($row) {
+            return self::getUser($row);
+        }
+        
+        return null;
+    }
+    
     public function validate_username() {
         $errors = array();
         

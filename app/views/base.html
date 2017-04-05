@@ -40,19 +40,20 @@
                     <ul class="nav navbar-nav">
                         <!-- Navigaation linkit -->
                         <li><a href="{{base_path}}">Etusivu</a></li>
-                        {% if not loggedin %}
+                        {% if not user_logged_in %}
                         <li><a href="{{base_path}}/register">Rekisteröidy</a></li>
                         {% endif %}
                     </ul>
                     <div class="nav navbar-nav pull-right">
-                        {% if loggedin %}
+                        {% if user_logged_in %}
                         <ul class="nav navbar-nav">
-                            <li><a href="{{base_path}}/settings">{{user.username}}</a></li>
+                            <li><a href="{{base_path}}/settings">{{user_logged_in.username}}</a></li>
+                            <button class="btn btn-outline-success">Kirjaudu ulos</button>
                         </ul>
                         {% else %}
-                        <form class="form-inline">
-                            <input class="form-control" type="text" placeholder="Käyttäjätunnus" />
-                            <input class="form-control" type="password" placeholder="Salasana" />
+                        <form class="form-inline" action="{{base_path}}/login" method="post">
+                            <input class="form-control" type="text" name="username" placeholder="Käyttäjätunnus" />
+                            <input class="form-control" type="password" name="password" placeholder="Salasana" />
                             <button class="btn btn-outline-success" type="submit">Kirjaudu</button>
                         </form>
                         {% endif %}
