@@ -22,25 +22,25 @@
                         <h5><a href="#">{{userinfo.followers}}</a><small> seuraajaa</small></h5>
                     </div>
                 </div>
-                <p><span>{{user.description}}</span></p>
+                <p class="description">{{user.description}}</p>
             </div>
         </div>
     </div>
 
     <div class="col-sm-6"> <!-- keskiosio -->
-        <!--<div class="panel"> --> <!-- tää seuraavaksi, tsekkaa tyylit --> 
-            <div class="media-body"> <!-- viestin kirjoitus -->
-                <div class="form-group has-feedback">
-                    <form action="{{base_path}}/user/{{user.id}}" method="post" id="sentmessage"> 
-                        <input type="hidden" name="userid" value="{{user.id}}" />
-                        <input type="hidden" name="replyid" value="0" />
-                        <input type="hidden" name="public_message" value="true" />
-                        <textarea class="form-control" name="text" id="text" placeholder="Uusi viesti..."></textarea>
-                        <button class="btn btn-primary" type="submit">Lähetä</button>
-                    </form>
-                </div>
-            </div> <!-- -->
-        <!-- </div> -->
+        {% if logged_in %}
+        <div class="media-body"> <!-- viestin kirjoitus -->
+            <div class="form-group has-feedback">
+                <form action="{{base_path}}/user/{{user.id}}" method="post" id="sentmessage"> 
+                    <input type="hidden" name="userid" value="{{user.id}}" />
+                    <input type="hidden" name="replyid" value="0" />
+                    <input type="hidden" name="public_message" value="true" />
+                    <textarea class="form-control" name="text" id="text" placeholder="Uusi viesti..."></textarea>
+                    <button class="btn btn-primary" type="submit">Lähetä</button>
+                </form>
+            </div>
+        </div> <!-- -->
+        {% endif %}
         <div class="panel panel-info">
             <div class="panel-heading">
                 <div class="media-body">
@@ -53,7 +53,7 @@
                 </div>
             </div>
             <div class="panel-body"> <!-- viestialue -->
-                {{content.user_messages(messageinfo, base_path)}}
+                {{content.user_messages(messageinfo, base_path, admin)}}
             </div> <!-- viestialue päättyy -->
         </div>
     </div>

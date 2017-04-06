@@ -21,5 +21,13 @@
         return true;
         // Jos käyttäjä ei ole kirjautunut sisään, ohjaa hänet toiselle sivulle (esim. kirjautumissivulle).
     }
+    
+    public static function admin_logged_in() {
+        if (self::check_logged_in()) {
+            return self::get_user_logged_in()->administrator;
+        }
+        
+        return false;
+    }
 
   }

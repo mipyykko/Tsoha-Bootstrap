@@ -15,7 +15,9 @@ class MessageController extends BaseController {
     public static function index() {
         $messages = Message::all();
         $messageinfo = Message::getMessageInfo($messages);
-        View::make('message/index.html', array('messageinfo' => $messageinfo));
+        View::make('message/index.html', array('messageinfo' => $messageinfo, 
+                                               'user' => self::get_user_logged_in(),
+                                               'admin' => self::admin_logged_in()));
     }
     
     public static function userindex($userid) {
@@ -23,8 +25,13 @@ class MessageController extends BaseController {
         $userinfo = User::getUserinfo($user); // nää vois pakata myös samaan
         $messages = Message::findByUser($userid);
         $messageinfo = Message::getMessageInfo($messages); 
+        $logged_in = false;
+        if (self::check_logged_in()) {
+            $logged_in = self::get_user_logged_in()->id == $user->id;
+        }
         View::make('user/index.html', array('user' => $user, 'messageinfo' => $messageinfo,
-                                            'userinfo' => $userinfo));
+                                            'userinfo' => $userinfo, 'logged_in' => $logged_in,
+                                            'admin' => self::admin_logged_in()));
     }
 
     public function tagindex($text) {
@@ -33,7 +40,8 @@ class MessageController extends BaseController {
         if ($tag) {
             $messages = Message::findByTag($tag->id);
             $messageinfo = Message::getMessageInfo($messages);
-            View::make('tag/index.html', array('messageinfo' => $messageinfo, 'tag' => $tag));
+            View::make('tag/index.html', array('messageinfo' => $messageinfo, 'tag' => $tag,
+                                               'admin' => self::admin_logged_in()));
         } else {
             $tag = array('text' => $text);
             View::make('tag/index.html', array('tag' => $tag));
@@ -50,11 +58,21 @@ class MessageController extends BaseController {
                 'public_message' => $params['public_message']
         ));
         $errors = $message->errors();
-        
-        if (count($errors) == 0) {
+        $logged_in = false;
+        if (self::check_logged_in()) {
+            $logged_in = self::get_user_logged_in()->id == $message->userid;
+        }
+        if (count($errors) == 0 && $logged_in) {
             $message->save();
         }
         Redirect::to('/user/'.$message->userid);
+    }
+    
+    public static function remove($id) {
+        if (self::admin_logged_in()) {
+            Message::remove($id);
+        }
+        Redirect::to("/");
     }
     
     public static function search() {

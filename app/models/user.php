@@ -132,7 +132,7 @@ class User extends BaseModel {
             $errors['username'] = 'Käyttäjänimen tulee olla 4-32 merkkiä pitkä!';
         }
         if (self::findByName($this->username)) {
-            $errors['username2'] = 'Käyttäjänimi on varattu!'; // hmh
+            $errors['username_taken'] = 'Käyttäjänimi on varattu!'; // hmh
         }
         
         return $errors;

@@ -1,4 +1,4 @@
-{% macro user_messages(messageinfo, path) %}
+{% macro user_messages(messageinfo, path, admin) %}
                 {% for messagedata in messageinfo %}
                 <div class="media message"> <!-- viesti alkaa -->
                     <!--<a class="media-left" href="#">
@@ -11,6 +11,9 @@
                             <li><a href="#"><span class="glyphicon glyphicon-share-alt"></span></a></li>
                             <li><a href="#"><span class="glyphicon glyphicon-retweet"></span></a></li>
                             <li><a href="#"><span class="glyphicon glyphicon-star"></span></a></li>
+                            {% if admin %}
+                            <li><a href="{{path}}/remove/{{messagedata.message.id}}" onclick="return confirm('Poista viesti?')"><span class="glyphicon glyphicon-remove" style="color: #FF0000"></span></a></li>
+                            {% endif %}
                         </ul>
                     </div>
                 </div> <!-- viesti päättyy -->

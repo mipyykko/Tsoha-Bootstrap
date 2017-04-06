@@ -63,3 +63,7 @@
   $routes->get('/tag/:tag', function($tag) {
       MessageController::tagindex($tag);
   });
+  
+  $routes->get('/remove/:id', function($id) {
+      MessageController::remove($id);
+  });

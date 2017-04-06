@@ -5,7 +5,7 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <!-- <img src="" alt="kuva" /> -->
-                <p><strong>#{{tag.text}}</strong></p>
+                <p>Viestit tagilla <strong>#{{tag.text}}</strong></p>
                 <!--
                 <div class="row">
                     <div class="col-xs-3">
@@ -26,22 +26,7 @@
     <div class="col-sm-6"> <!-- keskiosio -->
         <div class="panel-body"> <!-- viestialue -->
             {% if messageinfo %}
-            {% for messagedata in messageinfo %}
-            <div class="media"> <!-- viesti alkaa -->
-                <!--<a class="media-left" href="#">
-                    <img alt="kuva" src="" />
-                </a>-->
-                <div class="media-body">
-                    <h4 class="media-heading">{{messagedata.user.realname}}</h4>
-                    <p>{{messagedata.message.text | raw}}</p>
-                    <ul class="nav nav-pills nav-pills-custom">
-                        <li><a href="#"><span class="glyphicon glyphicon-share-alt"></span></a></li>
-                        <li><a href="#"><span class="glyphicon glyphicon-retweet"></span></a></li>
-                        <li><a href="#"><span class="glyphicon glyphicon-star"></span></a></li>
-                    </ul>
-                </div>
-            </div> <!-- viesti päättyy -->
-            {% endfor %}
+                 {{content.user_messages(messageinfo, base_path, admin)}}
             {% else %}
             <div><h2>Ei viestejä tagilla #{{tag.text}}</h2></div>
             {% endif %}

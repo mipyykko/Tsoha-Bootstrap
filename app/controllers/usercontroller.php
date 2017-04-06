@@ -42,7 +42,7 @@ class UserController extends BaseController {
          
          if (count($errors) == 0) {
              $user->save();
-             Redirect::to('/user/'.$user->id);
+             self::handlelogin();
          }
          View::make('user/register.html', array('user' => $user, 'errors' => $errors));
     }
@@ -71,7 +71,10 @@ class UserController extends BaseController {
         $user->last_seen = date('Y-m-d H:i:s');
         
         $errors = $user->errors();
-        if (count($errors) == 0 || (count($errors) == 1 && isset($errors['username']))) {
+        if (isset($errors['username_taken'])) {
+            unset($errors['username_taken']); // hmm
+        }
+        if (count($errors) == 0) {
             $user->update();
             Redirect::to('/user/'.$user->id);
         }

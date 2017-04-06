@@ -98,6 +98,15 @@ class Message extends BaseModel {
 
         Tag::parseAndSave($this);
     }
+    
+    public function remove($id) {
+        $query = DB::connection()->prepare("DELETE FROM Tagged WHERE messageid = :messageid");
+        $query->execute(array('messageid' => $id));
+        $query = DB::connection()->prepare("DELETE FROM Messages WHERE id = :id");
+        $query->execute(array('id' => $id));
+        
+        // poista tagit jotka jäivät orvoiksi?
+    }
 
     public static function getMessageinfo($messages) {
         $messageinfo = array();
