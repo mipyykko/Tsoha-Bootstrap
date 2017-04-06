@@ -25,6 +25,12 @@
         <nav class="navbar navbar-default" role="navigation">
             <div class="container-fluid">
 
+                {% if login_error %}
+                <div class="alert alert-danger fade in" role="alert">
+                    <button type="button" class="close" data-dismiss="alert">x</button>
+                    <strong>Virhe kirjautumisessa!</strong>
+                </div>
+                {% endif %}
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation">
                         <span class="sr-only">Toggle navigation</span>
@@ -48,13 +54,17 @@
                         {% if user_logged_in %}
                         <ul class="nav navbar-nav">
                             <li><a href="{{base_path}}/settings">{{user_logged_in.username}}</a></li>
-                            <button class="btn btn-outline-success">Kirjaudu ulos</button>
+                            <li><a href="{{base_path}}/logout" class="btn btn-outline-success">Kirjaudu ulos</a></li>
                         </ul>
                         {% else %}
-                        <form class="form-inline" action="{{base_path}}/login" method="post">
+                        <form class="navbar-form navbar-right" action="{{base_path}}/login" method="post">
+                            <div class="form-group">
                             <input class="form-control" type="text" name="username" placeholder="Käyttäjätunnus" />
+                            </div>
+                            <div class="form-group">
                             <input class="form-control" type="password" name="password" placeholder="Salasana" />
-                            <button class="btn btn-outline-success" type="submit">Kirjaudu</button>
+                            </div>
+                            <button class="btn btn-default" type="submit">Kirjaudu</button>
                         </form>
                         {% endif %}
                     </div>

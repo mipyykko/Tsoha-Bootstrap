@@ -28,7 +28,6 @@
     }
     
     public function validate_string_length($string, $length) {
-        $errors = array();
         if (strlen($string) < $length) {
             return false;
         }

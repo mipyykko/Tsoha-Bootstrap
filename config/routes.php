@@ -36,6 +36,18 @@
       MessageController::search();
   });
   
+  $routes->get('/settings', function() {
+      UserController::settings();
+  });
+  
+  $routes->post('/settings', function() {
+      UserController::handlesettings();
+  });
+  
+  $routes->get('/logout', function() {
+      UserController::logout();
+  });
+  
   $routes->get('/username/:username', function($username) {
       MessageController::userindex($username);
   });

@@ -18,7 +18,7 @@ class User extends BaseModel {
     public function __construct($attributes) {
         parent::__construct($attributes);
         $this->validators = array('validate_username', 'validate_password', 'validate_realname',
-                             'validate_description');
+                             'validate_description', 'validate_email');
     }
     
     public static function all() {
@@ -77,6 +77,17 @@ class User extends BaseModel {
         $this->id = $row['id'];
     }
     
+    public function update() {
+        $query = DB::connection()->prepare(
+                'UPDATE Users SET realname = :realname, description = :description, email = :email, '.
+                'public_profile = :public_profile, last_seen = :last_seen WHERE id = :id');
+        $query->execute(array('realname' => $this->realname, 'description' => $this->description,
+                              'email' => $this->email, 
+                              'public_profile' => $this->public_profile ? 't' : 'f',
+                              'last_seen' => $this->last_seen,
+                              'id' => $this->id));
+    }
+    
     public function getUserinfo($user) {
         $userinfo = array('registration' => Util::getMonthAsString($user->registration_date),
                           'posts' => 0,
@@ -118,10 +129,10 @@ class User extends BaseModel {
         
         if (strlen($this->username) < 4 || 
             strlen($this->username) > 32) {
-            $errors[] = 'Käyttäjänimen tulee olla 4-32 merkkiä pitkä!';
+            $errors['username'] = 'Käyttäjänimen tulee olla 4-32 merkkiä pitkä!';
         }
         if (self::findByName($this->username)) {
-            $errors[] = 'Käyttäjänimi on varattu!';
+            $errors['username2'] = 'Käyttäjänimi on varattu!'; // hmh
         }
         
         return $errors;
@@ -132,7 +143,7 @@ class User extends BaseModel {
         
         if (strlen($this->password) < 8 ||
             strlen($this->password) > 32) {
-            $errors[] = 'Salasanan tulee olla 4-32 merkkiä pitkä!';
+            $errors['password'] = 'Salasanan tulee olla 4-32 merkkiä pitkä!';
         }
         
         return $errors;
@@ -142,17 +153,26 @@ class User extends BaseModel {
         $errors = array();
         
         if (strlen($this->realname) > 64) {
-            $errors[] = 'Oikea nimi saa olla korkeintaan 64 merkkiä pitkä!';
+            $errors['realname'] = 'Oikea nimi saa olla korkeintaan 64 merkkiä pitkä!';
         }
         
         return $errors;
     }
     
+    public function validate_email() {
+        $errors = array();
+        
+        if ($this->email && !filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+            $errors['email'] = 'Sähköpostiosoite ei ole kelvollinen!';
+        }
+        
+        return $errors;
+    }
     public function validate_description() {
         $errors = array();
         
         if (strlen($this->description) > 255) {
-            $errors[] = 'Kuvaus saa olla korkeintaan 255 merkkiä pitkä!';
+            $errors['description'] = 'Kuvaus saa olla korkeintaan 255 merkkiä pitkä!';
         }
         
         return $errors;

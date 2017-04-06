@@ -1,11 +1,11 @@
-{% macro user_messages(messageinfo) %}
+{% macro user_messages(messageinfo, path) %}
                 {% for messagedata in messageinfo %}
                 <div class="media message"> <!-- viesti alkaa -->
                     <!--<a class="media-left" href="#">
                         <img alt="kuva" src="" />
                     </a>-->
                     <div class="media-body">
-                        <h4 class="media-heading"><a href="{{base_path}}/user/{{messagedata.user.id}}">{{messagedata.user.realname}}</a></h4>
+                        <h4 class="media-heading"><a href="{{path}}/user/{{messagedata.user.id}}">{{messagedata.user.username}}</a></h4>
                         <p>{{messagedata.message.text | raw}}</p>
                         <ul class="nav nav-pills nav-pills-custom">
                             <li><a href="#"><span class="glyphicon glyphicon-share-alt"></span></a></li>

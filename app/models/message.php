@@ -142,7 +142,7 @@ class Message extends BaseModel {
     public function validate_text() {
         $errors = array();
         if ($this->text == '' || strlen($this->text) < 1) {
-            $errors[] = 'Viestissä ei ole sisältöä!';
+            $errors['text'] = 'Viestissä ei ole sisältöä!';
         }
         
         return $errors;
