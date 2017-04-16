@@ -6,7 +6,15 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <!-- <img src="" alt="kuva" /> -->
-                <p><strong>{{user.username}}</strong></p>
+                <p><strong>{{user.username}}
+                {% if admin %}
+                <a href="{{base_path}}/user/{{user.id}}/edit"><span class="glyphicon glyphicon-edit" style="color: #FF0000"></span></a>
+                {% endif %}</strong></p>
+                {% if logged_in and not followed and not own_page %}
+                <p><a href="{{base_path}}/user/{{user.id}}/follow" class="btn btn-default">Seuraa</a></p>
+                {% elseif logged_in and followed and not own_page %}
+                <p><a href="{{base_path}}/user/{{user.id}}/unfollow" class="btn btn-default">Älä seuraa</a></p>
+                {% endif %}
                 <p><small>{{user.realname}}</small></p>
                 {% if userinfo.registration %}
                 <p><small>Käyttäjä {{userinfo.registration}}</small></p>
@@ -28,7 +36,7 @@
     </div>
 
     <div class="col-sm-6"> <!-- keskiosio -->
-        {% if logged_in %}
+        {% if logged_in and own_page %}
         <div class="media-body"> <!-- viestin kirjoitus -->
             <div class="form-group has-feedback">
                 <form action="{{base_path}}/user/{{user.id}}" method="post" id="sentmessage"> 

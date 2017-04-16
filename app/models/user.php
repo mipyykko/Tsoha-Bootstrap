@@ -89,11 +89,51 @@ class User extends BaseModel {
     }
     
     public function getUserinfo($user) {
+        $query = DB::connection()->prepare(
+                'SELECT id FROM Messages WHERE userid = :userid');
+        $query->execute(array('userid' => $user->id));
+        $rows = $query->fetchAll();
+        $messages = \count($rows);
+        
+        $query = DB::connection()->prepare(
+                'SELECT userid FROM Followed WHERE userid = :userid');
+        $query->execute(array('userid' => $user->id));
+        $rows = $query->fetchAll();
+        $followed = \count($rows);;
+        
+        $query = DB::connection()->prepare(
+                'SELECT userid FROM Followed WHERE followed_userid = :userid');
+        $query->execute(array('userid' => $user->id));
+        $rows = $query->fetchAll();
+        $followers = \count($rows);
+        
+        
         $userinfo = array('registration' => Util::getMonthAsString($user->registration_date),
-                          'posts' => 0,
-                          'followed' => 0,
-                          'followers' => 0);
+                          'messages' => $messages,
+                          'followed' => $followed,
+                          'followers' => $followers);
         return $userinfo;
+    }
+
+    public function follows($follow_id) {
+        $query = DB::connection()->prepare(
+                'SELECT userid FROM Followed WHERE userid = :userid AND '.
+                'followed_userid = :followed_userid');
+        $query->execute(array('userid' => $this->id, 'followed_userid' => $follow_id));
+        $rows = $query->fetch();
+        return $rows != null;
+    }
+    
+    public function follow($id) {
+        $query = DB::connection()->prepare(
+                'INSERT INTO Followed VALUES (:userid, :followed_userid)');
+        $query->execute(array('userid' => $this->id, 'followed_userid' => $id));
+    }
+    
+    public function unfollow($id) {
+        $query = DB::connection()->prepare(
+                'DELETE FROM Followed WHERE userid = :userid AND followed_userid = :followed_userid');
+        $query->execute(array('userid' => $this->id, 'followed_userid' => $id));
     }
     
     private function getUser($row) {

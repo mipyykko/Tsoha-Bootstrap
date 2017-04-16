@@ -43,6 +43,22 @@
   $routes->post('/settings', function() {
       UserController::handlesettings();
   });
+
+  $routes->get('/user/:id/edit', function($id) {
+      UserController::adminsettings($id);
+  });
+  
+  $routes->post('/user/:id/edit', function($id) {
+      UserController::handlesettings($id);
+  });
+  
+  $routes->get('/user/:id/follow', function($id) {
+      UserController::follow($id);
+  });
+  
+  $routes->get('/user/:id/unfollow', function($id) {
+      UserController::unfollow($id);
+  });
   
   $routes->get('/logout', function() {
       UserController::logout();

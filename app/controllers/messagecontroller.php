@@ -25,12 +25,17 @@ class MessageController extends BaseController {
         $userinfo = User::getUserinfo($user); // nää vois pakata myös samaan
         $messages = Message::findByUser($userid);
         $messageinfo = Message::getMessageInfo($messages); 
-        $logged_in = false;
-        if (self::check_logged_in()) {
-            $logged_in = self::get_user_logged_in()->id == $user->id;
+        $user_logged_in = self::get_user_logged_in();
+        $own_page = false;
+        if ($user_logged_in) {
+            $own_page = self::get_user_logged_in()->id == $user->id;
+        }
+        if (!$own_page && $user_logged_in) {
+            $followed = $user_logged_in->follows($userid);
         }
         View::make('user/index.html', array('user' => $user, 'messageinfo' => $messageinfo,
-                                            'userinfo' => $userinfo, 'logged_in' => $logged_in,
+                                            'userinfo' => $userinfo, 'logged_in' => $user_logged_in != null,
+                                            'own_page' => $own_page, 'followed' => $followed, 
                                             'admin' => self::admin_logged_in()));
     }
 

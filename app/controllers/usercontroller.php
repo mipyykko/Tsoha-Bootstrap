@@ -24,6 +24,13 @@ class UserController extends BaseController {
         View::make('user/settings.html', array('user' => self::get_user_logged_in()));
     }
     
+    public static function adminsettings($id) {
+        if (!self::check_logged_in() || !self::admin_logged_in()) {
+            View::make('user/'.$id);
+        }
+        View::make('user/settings.html', array('user' => User::find($id), 'admin' => true));
+    }
+    
     public static function handleregister() {
          $params = $_POST;
          $user = new User(array(
@@ -61,9 +68,9 @@ class UserController extends BaseController {
         }
     }
     
-    public static function handlesettings() {
+    public static function handlesettings($id = null) {
         $params = $_POST;
-        $user = self::get_user_logged_in();
+        $user = User::find($params['userid']);
         $user->realname = $params['realname'];
         $user->description = $params['description'];
         $user->email = $params['email'];
@@ -74,6 +81,9 @@ class UserController extends BaseController {
         if (isset($errors['username_taken'])) {
             unset($errors['username_taken']); // hmm
         }
+        if (isset($errors['password'])) {
+            unset($errors['password']);
+        }
         if (count($errors) == 0) {
             $user->update();
             Redirect::to('/user/'.$user->id);
@@ -81,6 +91,21 @@ class UserController extends BaseController {
         View::make('user/settings.html', array('user' => $user, 'errors' => $errors));
     }
     
+    public static function follow($id) {
+        $user_logged_in = self::get_user_logged_in();
+        if ($user_logged_in && !$user_logged_in->follows($id)) {
+            $user_logged_in->follow($id);
+        }
+        Redirect::to('/user/'.$id);
+    }
+
+    public static function unfollow($id) {
+        $user_logged_in = self::get_user_logged_in();
+        if ($user_logged_in && $user_logged_in->follows($id)) {
+            $user_logged_in->unfollow($id);
+        }
+        Redirect::to('/user/'.$id);
+    }
     public static function logout() {
         $_SESSION['user'] = null;
         

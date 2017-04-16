@@ -23,6 +23,7 @@
             <small id="FormHelp" class="form-text text-muted">Onko profiilisi julkinen?</small>
             <input type="checkbox" name="public_profile" class="form-check-input" {% if user %}{% if user.public_profile %}checked{% endif %}{% else %}checked{% endif %}/></div>
             <button class="btn btn-primary" type="submit">Tee muutokset</button>
+            <input type="hidden" name="userid" value="{{user.id}}" />
         </div>
     </form>
 </div>
