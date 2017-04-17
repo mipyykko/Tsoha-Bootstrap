@@ -13,20 +13,33 @@
 class MessageController extends BaseController {
 
     public static function index() {
-        $messages = Message::all();
+        $messages = Message::all(self::check_logged_in());
         $messageinfo = Message::getMessageInfo($messages);
         View::make('message/index.html', array('messageinfo' => $messageinfo, 
                                                'user' => self::get_user_logged_in(),
                                                'admin' => self::admin_logged_in()));
     }
     
+    public static function followed() {
+        $user = self::get_user_logged_in();
+        if (!$user) {
+            Redirect::to("/");
+        }
+        $messages = Message::followed($user->id);
+        $messageinfo = Message::getMessageInfo($messages);
+        View::make('message/index.html', array('messageinfo' => $messageinfo,
+                                               'user' => $user,
+                                               'admin' => self::admin_logged_in()));
+    }
+    
     public static function userindex($userid) {
         $user = User::find($userid);
-        $userinfo = User::getUserinfo($user); // nää vois pakata myös samaan
-        $messages = Message::findByUser($userid);
-        $messageinfo = Message::getMessageInfo($messages); 
         $user_logged_in = self::get_user_logged_in();
+        $userinfo = User::getUserinfo($user); // nää vois pakata myös samaan
+        $messages = Message::findByUser($userid, $user_logged_in != null);
+        $messageinfo = Message::getMessageInfo($messages); 
         $own_page = false;
+        $followed = null;
         if ($user_logged_in) {
             $own_page = self::get_user_logged_in()->id == $user->id;
         }
@@ -43,8 +56,9 @@ class MessageController extends BaseController {
         $tag = Tag::findByText($text);
         
         if ($tag) {
-            $messages = Message::findByTag($tag->id);
+            $messages = Message::findByTag($tag->id, self::check_logged_in());
             $messageinfo = Message::getMessageInfo($messages);
+
             View::make('tag/index.html', array('messageinfo' => $messageinfo, 'tag' => $tag,
                                                'admin' => self::admin_logged_in()));
         } else {

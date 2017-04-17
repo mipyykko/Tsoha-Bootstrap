@@ -20,9 +20,9 @@ class Tag extends BaseModel {
     }
 
     public function find($id) {
-        $query = DB::connection()->prepare('SELECT * FROM Tags WHERE id = :id');
-        $query->execute(array('id' => $id));
-        $row = $query->fetch();
+        $row = Util::dbQuery(
+                'SELECT * FROM Tags WHERE id = :id',
+                array('id' => $id), false);
 
         if ($row) {
             $tag = self::newTag($row);
@@ -33,9 +33,9 @@ class Tag extends BaseModel {
     }
 
     public function findByText($text) {
-        $query = DB::connection()->prepare('SELECT * FROM Tags WHERE text = :text');
-        $query->execute(array('text' => $text));
-        $row = $query->fetch();
+        $row = Util::dbQuery(
+                'SELECT * FROM Tags WHERE text = :text',
+                array('text' => $text), false);
 
         if ($row) {
             $tag = self::newTag($row);
@@ -56,17 +56,14 @@ class Tag extends BaseModel {
             $tag = substr($tag, 1);
             $foundtag = self::findByText($tag);
             if (!$foundtag) {
-                $query = DB::connection()->prepare(
-                        'INSERT INTO Tags (text) VALUES (:text) RETURNING id'
-                );
-                $query->execute(array('text' => $tag));
-                $row = $query->fetch();
+                $row = Util::dbQuery(
+                        'INSERT INTO Tags (text) VALUES (:text) RETURNING id',
+                        array('text' => $tag), false);
                 $foundtag = new Tag(array('text' => $tag, 'id' => $row['id']));
             }
-            $query = DB::connection()->prepare(
-                    'INSERT INTO Tagged (tagid, messageid) VALUES (:tagid, :messageid)'
-            );
-            $query->execute(array('tagid' => $foundtag->id, 'messageid' => $message->id));
+            Util::dbQuery(
+                    'INSERT INTO Tagged (tagid, messageid) VALUES (:tagid, :messageid)',
+                    array('tagid' => $foundtag->id, 'messageid' => $message->id), false);
         }
     }
 

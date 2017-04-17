@@ -22,9 +22,9 @@ class User extends BaseModel {
     }
     
     public static function all() {
-        $query = DB::connection()->prepare('SELECT * FROM Users');
-        $query->execute();
-        $rows = $query->fetchAll();
+        $rows = Util::dbQuery(
+                'SELECT * FROM Users',
+                array(), true);
         $users = array();
         
         foreach ($rows as $row) {
@@ -35,9 +35,9 @@ class User extends BaseModel {
     }
 
     public static function find($id) {
-        $query = DB::connection()->prepare('SELECT * FROM Users WHERE id = :id');
-        $query->execute(array('id' => $id));
-        $row = $query->fetch();
+        $row = Util::dbQuery(
+                'SELECT * FROM Users WHERE id = :id',
+                array('id' => $id), false);
         
         if ($row) {
             $user = self::getUser($row);
@@ -48,9 +48,9 @@ class User extends BaseModel {
     }
     
     public static function findByName($username) {
-        $query = DB::connection()->prepare('SELECT * FROM Users WHERE username = :username LIMIT 1');
-        $query->execute(array('username' => $username));
-        $row = $query->fetch();
+        $row = Util::dbQuery(
+                'SELECT * FROM Users WHERE username = :username LIMIT 1',
+                array('username' => $username), false);
         
         if ($row) {
             $user = self::getUser($row);
@@ -61,52 +61,47 @@ class User extends BaseModel {
     }
     
     public function save() {
-        $query = DB::connection()->prepare(
+        $row = Util::dbQuery(
                 'INSERT INTO Users (username, realname, password, description, email, public_profile, '.
                 'administrator, registration_date, last_seen) VALUES (:username, :realname, '.
                 ':password, :description, :email, :public_profile, :administrator, :registration_date, '.
-                ':last_seen) RETURNING id');
-        $query->execute(array('username' => $this->username, 'realname' => $this->realname, 
-                              'password' => $this->password, 'description' => $this->description, 
-                              'email' => $this->email, 
-                              'administrator' => $this->administrator ? 't' : 'f',
-                              'public_profile' => $this->public_profile ? 't' : 'f',
-                              'registration_date' => $this->registration_date, 
-                              'last_seen' => $this->last_seen));
-        $row = $query->fetch();
+                ':last_seen) RETURNING id',
+                array('username' => $this->username, 'realname' => $this->realname, 
+                      'password' => $this->password, 'description' => $this->description, 
+                      'email' => $this->email, 
+                      'administrator' => $this->administrator ? 't' : 'f',
+                      'public_profile' => $this->public_profile ? 't' : 'f',
+                      'registration_date' => $this->registration_date, 
+                      'last_seen' => $this->last_seen));
         $this->id = $row['id'];
     }
     
     public function update() {
-        $query = DB::connection()->prepare(
+        Util::dbQuery(
                 'UPDATE Users SET realname = :realname, description = :description, email = :email, '.
-                'public_profile = :public_profile, last_seen = :last_seen WHERE id = :id');
-        $query->execute(array('realname' => $this->realname, 'description' => $this->description,
-                              'email' => $this->email, 
-                              'public_profile' => $this->public_profile ? 't' : 'f',
-                              'last_seen' => $this->last_seen,
-                              'id' => $this->id));
+                'public_profile = :public_profile, last_seen = :last_seen WHERE id = :id',
+                array('realname' => $this->realname, 'description' => $this->description,
+                      'email' => $this->email, 
+                      'public_profile' => $this->public_profile ? 't' : 'f',
+                      'last_seen' => $this->last_seen,
+                      'id' => $this->id), false);
     }
     
     public function getUserinfo($user) {
-        $query = DB::connection()->prepare(
-                'SELECT id FROM Messages WHERE userid = :userid');
-        $query->execute(array('userid' => $user->id));
-        $rows = $query->fetchAll();
+        $rows = Util::dbQuery(
+                'SELECT id FROM Messages WHERE userid = :userid',
+                array('userid' => $user->id), true);
         $messages = \count($rows);
         
-        $query = DB::connection()->prepare(
-                'SELECT userid FROM Followed WHERE userid = :userid');
-        $query->execute(array('userid' => $user->id));
-        $rows = $query->fetchAll();
+        $rows = Util::dbQuery(
+                'SELECT userid FROM Followed WHERE userid = :userid',
+                array('userid' => $user->id), true);
         $followed = \count($rows);;
         
-        $query = DB::connection()->prepare(
-                'SELECT userid FROM Followed WHERE followed_userid = :userid');
-        $query->execute(array('userid' => $user->id));
-        $rows = $query->fetchAll();
+        $rows = Util::dbQuery(
+                'SELECT userid FROM Followed WHERE followed_userid = :userid',
+                array('userid' => $user->id), true);
         $followers = \count($rows);
-        
         
         $userinfo = array('registration' => Util::getMonthAsString($user->registration_date),
                           'messages' => $messages,
@@ -116,24 +111,23 @@ class User extends BaseModel {
     }
 
     public function follows($follow_id) {
-        $query = DB::connection()->prepare(
+        $rows = Util::dbQuery(
                 'SELECT userid FROM Followed WHERE userid = :userid AND '.
-                'followed_userid = :followed_userid');
-        $query->execute(array('userid' => $this->id, 'followed_userid' => $follow_id));
-        $rows = $query->fetch();
+                'followed_userid = :followed_userid',
+                array('userid' => $this->id, 'followed_userid' => $follow_id), true);
         return $rows != null;
     }
     
     public function follow($id) {
-        $query = DB::connection()->prepare(
-                'INSERT INTO Followed VALUES (:userid, :followed_userid)');
-        $query->execute(array('userid' => $this->id, 'followed_userid' => $id));
+        Util::dbQuery(
+                'INSERT INTO Followed VALUES (:userid, :followed_userid)',
+                array('userid' => $this->id, 'followed_userid' => $id), false);
     }
     
     public function unfollow($id) {
-        $query = DB::connection()->prepare(
-                'DELETE FROM Followed WHERE userid = :userid AND followed_userid = :followed_userid');
-        $query->execute(array('userid' => $this->id, 'followed_userid' => $id));
+        Util::dbQuery(
+                'DELETE FROM Followed WHERE userid = :userid AND followed_userid = :followed_userid',
+                array('userid' => $this->id, 'followed_userid' => $id), false);
     }
     
     private function getUser($row) {
@@ -153,10 +147,9 @@ class User extends BaseModel {
     }
     
     public function auth($username, $password) {
-        $query = DB::connection()->prepare(
-                'SELECT * FROM Users WHERE username = :username AND password = :password LIMIT 1');
-        $query->execute(array('username' => $username, 'password' => $password));
-        $row = $query->fetch();
+        $row = Util::dbQuery(
+                'SELECT * FROM Users WHERE username = :username AND password = :password LIMIT 1',
+                array('username' => $username, 'password' => $password), false);
         if ($row) {
             return self::getUser($row);
         }

@@ -20,12 +20,13 @@ class Message extends BaseModel {
         $this->validators = array('validate_text');
     }
 
-    public static function all() {
-        $query = DB::connection()->prepare(
-                'SELECT * FROM Messages ORDER BY sent DESC'
+    public static function all($logged_in) {
+        $rows = Util::dbQuery(
+                'SELECT * FROM Messages '.
+                ($logged_in ? '' : ' WHERE public_message = \'t\' ').
+                'ORDER BY sent DESC', 
+                array(), true
         );
-        $query->execute();
-        $rows = $query->fetchAll();
         $messages = array();
 
         foreach ($rows as $row) {
@@ -35,12 +36,27 @@ class Message extends BaseModel {
         return $messages;
     }
 
-    public static function find($id) {
-        $query = DB::connection()->prepare(
-                'SELECT * FROM Messages WHERE id = :id ORDER BY sent DESC'
-        );
-        $query->execute(array('id' => $id));
-        $row = $query->fetch();
+    public static function followed($id) {
+        $rows = Util::dbQuery(
+                'SELECT * FROM Messages WHERE userid IN '.
+                '(SELECT followed_userid FROM Followed WHERE userid = :id) '.
+                'ORDER BY sent DESC',
+                array('id' => $id), true);
+        $messages = array();
+        
+        foreach ($rows as $row) {
+            $messages[] = self::newMessage($row, true);
+        }
+        
+        return $messages;
+    }
+    
+    public static function find($id, $logged_in) {
+        $row = Util::dbQuery(
+                'SELECT * FROM Messages WHERE id = :id '.
+                $logged_in ? '' : 'AND public_message = \'t\' '.
+                'ORDER BY sent DESC',
+                array('id' => $id), false);
 
         if ($row) {
             $message = self::newMessage($row, true);
@@ -50,12 +66,12 @@ class Message extends BaseModel {
         return null;
     }
 
-    public static function findByUser($userid) {
-        $query = DB::connection()->prepare(
-                'SELECT * FROM Messages WHERE userid = :userid ORDER BY sent DESC'
-        );
-        $query->execute(array('userid' => $userid));
-        $rows = $query->fetchAll();
+    public static function findByUser($userid, $logged_in) {
+        $rows = Util::dbQuery(
+                'SELECT * FROM Messages WHERE userid = :userid '.
+                ($logged_in ? '' : 'AND public_message = \'t\' ').
+                'ORDER BY sent DESC',
+                array('userid' => $userid), true);
         $messages = array();
 
         foreach ($rows as $row) {
@@ -65,13 +81,13 @@ class Message extends BaseModel {
         return $messages;
     }
 
-    public static function findByTag($id) {
-        $query = DB::connection()->prepare(
+    public static function findByTag($id, $logged_in) {
+        $rows = Util::dbQuery(
                 'SELECT * FROM Messages WHERE id IN ' .
-                '(SELECT messageid FROM Tagged WHERE tagid = :tagid) ORDER BY sent DESC'
-        );
-        $query->execute(array('tagid' => $id));
-        $rows = $query->fetchAll();
+                '(SELECT messageid FROM Tagged WHERE tagid = :tagid) '.
+                $logged_in ? '' : ' AND public_profile = \'t\' '.
+                'ORDER BY sent DESC',
+                array('tagid' => $id), true);
         $messages = array();
 
         foreach ($rows as $row) {
@@ -82,28 +98,32 @@ class Message extends BaseModel {
     }
 
     public function save() {
-        $query = DB::connection()->prepare(
+        $row = Util::dbQuery(
                 'INSERT INTO Messages (userid, text, sent, public_message) ' .
-                'VALUES (:userid, :text, :sent, :public_message) RETURNING id'
-        );
-        $query->execute(array('userid' => $this->userid, 'text' => $this->text,
-            'sent' => $this->sent, 'public_message' => $this->public_message));
-        $row = $query->fetch();
+                'VALUES (:userid, :text, :sent, :public_message) RETURNING id',
+                array('userid' => $this->userid, 'text' => $this->text,
+                'sent' => $this->sent, 
+                'public_message' => $this->public_message ? 't' : 'f'),
+                false);
         $this->id = $row['id'];
         $this->replyid = $row['id'];
 
         // Ei kovin kaunista mutta nyt on näin
-        $query = DB::connection()->prepare('UPDATE Messages SET replyid = :replyid WHERE id = :id');
-        $query->execute(array('id' => $this->id, 'replyid' => $this->replyid));
+        Util::dbQuery(
+                'UPDATE Messages SET replyid = :replyid WHERE id = :id',
+                array('id' => $this->id, 'replyid' => $this->replyid),
+                false);
 
         Tag::parseAndSave($this);
     }
     
     public function remove($id) {
-        $query = DB::connection()->prepare("DELETE FROM Tagged WHERE messageid = :messageid");
-        $query->execute(array('messageid' => $id));
-        $query = DB::connection()->prepare("DELETE FROM Messages WHERE id = :id");
-        $query->execute(array('id' => $id));
+        Util::dbQuery(
+                'DELETE FROM Tagged WHERE messageid = :messageid',
+                array('messageid' => $id), false);
+        Util::dbQuery(
+                'DELETE FROM Messages WHERE id = :id',
+                array('id' => $id), false);
         
         // poista tagit jotka jäivät orvoiksi?
     }

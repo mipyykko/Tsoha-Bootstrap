@@ -60,6 +60,10 @@
       UserController::unfollow($id);
   });
   
+  $routes->get('/followed', function() {
+      MessageController::followed();
+  });
+  
   $routes->get('/logout', function() {
       UserController::logout();
   });
@@ -68,7 +72,7 @@
       MessageController::userindex($username);
   });
   
-  $routes->post('/user/:id', function($id) {
+  $routes->post('/user/:id', function() {
       MessageController::store();
   });
   

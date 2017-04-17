@@ -31,4 +31,13 @@ class Util {
         $date .= $year;
         return $date;
     }
+    
+    public function dbQuery($sql, $params, $multiple) {
+        $query = DB::connection()->prepare($sql);
+        $query->execute($params);
+        if ($multiple) {
+            return $query->fetchAll();
+        }
+        return $query->fetch();
+    }
 }

@@ -42,7 +42,7 @@
                 <form action="{{base_path}}/user/{{user.id}}" method="post" id="sentmessage"> 
                     <input type="hidden" name="userid" value="{{user.id}}" />
                     <input type="hidden" name="replyid" value="0" />
-                    <input type="hidden" name="public_message" value="true" />
+                    <input type="hidden" name="public_message" value="{{user.public_profile}}" />
                     <textarea class="form-control" name="text" id="text" placeholder="Uusi viesti..."></textarea>
                     <button class="btn btn-primary" type="submit">Lähetä</button>
                 </form>
