@@ -33,17 +33,7 @@
         {% endif %}
 
         <div class="panel panel-info">
-            <div class="panel-heading">
-                <div class="media-body">
-                    <!-- haku -->
-                    <form action="{{base_path}}/search" method="post" id="search"> 
-                        <div class="form-group has-feedback">
-                            <input type="text" class="form-control" id="search">
-                            <span class="glyphicon glyphicon-search form-control-feedback"></span>
-                        </div>
-                    </form>
-                </div>
-            </div>
+            {{content.search(base_path)}}
             <div class="panel-body"> <!-- viestialue -->
                 {% if followed and not followed.has_content %}
                 <p>Ei seurattuja käyttäjiä tai seurattujen käyttäjien viestejä!</p>

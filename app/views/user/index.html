@@ -55,16 +55,7 @@
                 <p>Tämä profiili on yksityinen. Kirjaudu sisään.</p>
             </div>
             {% else %}
-            <div class="panel-heading">
-                <div class="media-body">
-                    <form action="{{base_path}}/user/{{user.id}}/search" method="post" id="search">
-                        <div class="form-group has-feedback">
-                            <input type="text" class="form-control" name="search" id="search">
-                            <span class="glyphicon glyphicon-search form-control-feedback"></span>
-                        </div>
-                    </form>
-                </div>
-            </div>
+            {{content.search(base_path)}}
             <div class="panel-body"> <!-- viestialue -->
                 {{content.user_messages(messageinfo, base_path, admin)}}
             </div> <!-- viestialue päättyy -->
