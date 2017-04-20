@@ -17,10 +17,6 @@ class Util {
             array("", "tammikuu", "helmikuu", "maaliskuu", "huhtikuu", "toukokuu", "kesäkuu",
                   "heinäkuu", "elokuu", "syyskuu", "lokakuu", "marraskuu", "joulukuu");
     
-    public function __construct($attributes) {
-        parent::__construct($attributes);
-    }
-    
     public function getMonthAsString($timestamp) {
         $month = date("n", strtotime($timestamp));
         $year = date("Y", strtotime($timestamp));
@@ -39,5 +35,20 @@ class Util {
             return $query->fetchAll();
         }
         return $query->fetch();
+    }
+    
+    public function parsetags($input) {
+        if (!$input) {
+            return null;
+        }
+        
+        $tags = array();
+        \preg_match_all("/(#[\p{Pc}\p{N}\p{L}\p{Mn}]+)/u", $input, $tags);
+        if ($tags) {
+            foreach ($tags[1] as $tag) { // TODO:fix
+                $input = \str_replace($tag, "<a href=\"/pitterpatter/tag/" . \substr($tag, 1) . "\">" . $tag . "</a>", $input);
+            }
+        }
+        return $input;
     }
 }

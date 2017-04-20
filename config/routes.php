@@ -44,6 +44,10 @@
       UserController::handlesettings();
   });
 
+  $routes->post('/settings/password', function() {
+      //todo
+  });
+  
   $routes->get('/user/:id/edit', function($id) {
       UserController::adminsettings($id);
   });

@@ -72,7 +72,7 @@ class User extends BaseModel {
                       'administrator' => $this->administrator ? 't' : 'f',
                       'public_profile' => $this->public_profile ? 't' : 'f',
                       'registration_date' => $this->registration_date, 
-                      'last_seen' => $this->last_seen));
+                      'last_seen' => $this->last_seen), false);
         $this->id = $row['id'];
     }
     

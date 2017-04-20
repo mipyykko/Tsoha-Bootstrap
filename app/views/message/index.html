@@ -5,24 +5,14 @@
     <div class="col-sm-3"> <!-- vasen paneeli -->
         <div class="panel panel-default">
             <div class="panel-body">
-                <!-- <img src="" alt="kuva" /> -->
-                <!--
-                <p><strong>@Käyttäjä</strong></p>
-                <p><small>oikeanimi</small></p>
-                <p><small>Rekisteröitynyt maaliskuussa 2017</small></p>
-                <div class="row">
-                    <div class="col-xs-3">
-                        <h5><a href="#">0</a><small> viestiä</small></h5>
-                    </div>
-                    <div class="col-xs-4">
-                        <h5><a href="#">0</a><small> seurattu</small></h5>
-                    </div>
-                    <div class="col-xs-5">
-                        <h5><a href="#">0</a><small> seuraajaa</small></h5>
-                    </div>
-                </div>
-                <p><span>Kuvaus käyttäjästä joka ulottuu ehkä seuraavalle riville ja niin edelleen ja edelleen</span></p>
-                -->
+                <h4>Viime aikoina suositut:</h4>
+                {% if tags %}
+                {% for tag in tags %}
+                <p>{{tag|raw}}</p>
+                {% endfor %}
+                {% else %}
+                <p>No activity!</p>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -55,7 +45,11 @@
                 </div>
             </div>
             <div class="panel-body"> <!-- viestialue -->
+                {% if followed and not followed.has_content %}
+                <p>Ei seurattuja käyttäjiä tai seurattujen käyttäjien viestejä!</p>
+                {% else %}
                 {{content.user_messages(messageinfo, base_path, admin)}}
+                {% endif %}
             </div> <!-- viestialue päättyy -->
         </div>
     </div>

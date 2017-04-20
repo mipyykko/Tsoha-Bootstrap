@@ -11,10 +11,10 @@ INSERT INTO Messages (userid, text, sent) VALUES (
     2, 'hirveetä kattoo #testi #toinentagi', NOW()
 );
 
-INSERT INTO Tags (text) VALUES (
-    'testi'
+INSERT INTO Tags (text, last_active) VALUES (
+    'testi', NOW()
 ), (
-    'toinentagi'
+    'toinentagi', NOW()
 );
 
 INSERT INTO Tagged (messageid, tagid) VALUES (

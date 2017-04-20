@@ -36,16 +36,20 @@ class Message extends BaseModel {
         return $messages;
     }
 
-    public static function followed($id) {
+    public static function findFollowed($id, $include_own) {
         $rows = Util::dbQuery(
                 'SELECT * FROM Messages WHERE userid IN '.
                 '(SELECT followed_userid FROM Followed WHERE userid = :id) '.
+                ($include_own ? 'OR userid = :id ' : '').
                 'ORDER BY sent DESC',
                 array('id' => $id), true);
         $messages = array();
         
-        foreach ($rows as $row) {
-            $messages[] = self::newMessage($row, true);
+        if ($rows) {
+            foreach ($rows as $row) {
+                $messages[] = self::newMessage($row, true);
+            }
+        
         }
         
         return $messages;
@@ -54,7 +58,7 @@ class Message extends BaseModel {
     public static function find($id, $logged_in) {
         $row = Util::dbQuery(
                 'SELECT * FROM Messages WHERE id = :id '.
-                $logged_in ? '' : 'AND public_message = \'t\' '.
+                ($logged_in ? '' : 'AND public_message = \'t\' ').
                 'ORDER BY sent DESC',
                 array('id' => $id), false);
 
@@ -85,7 +89,7 @@ class Message extends BaseModel {
         $rows = Util::dbQuery(
                 'SELECT * FROM Messages WHERE id IN ' .
                 '(SELECT messageid FROM Tagged WHERE tagid = :tagid) '.
-                $logged_in ? '' : ' AND public_profile = \'t\' '.
+                ($logged_in ? '' : ' AND public_profile = \'t\' ').
                 'ORDER BY sent DESC',
                 array('tagid' => $id), true);
         $messages = array();
@@ -146,28 +150,13 @@ class Message extends BaseModel {
             'id' => $row['id'],
             'userid' => $row['userid'],
             'replyid' => $row['replyid'],
-            'text' => $parse ? self::parsetags($row['text']) : $row['text'],
+            'text' => $parse ? Util::parsetags($row['text']) : $row['text'],
             'sent' => $row['sent'],
             'public_message' => $row['public_message']));
 
         return $message;
     }
 
-    private function parsetags($message) {
-        if (!$message) {
-            return null;
-        }
-        
-        $tags = array();
-        \preg_match_all("/(#[\p{Pc}\p{N}\p{L}\p{Mn}]+)/u", $message, $tags);
-        if ($tags) {
-            foreach ($tags[1] as $tag) { // TODO:fix
-                $message = \str_replace($tag, "<a href=\"/pitterpatter/tag/" . \substr($tag, 1) . "\">" . $tag . "</a>", $message);
-            }
-        }
-        return $message;
-    }
-    
     public function validate_text() {
         $errors = array();
         if ($this->text == '' || strlen($this->text) < 1) {

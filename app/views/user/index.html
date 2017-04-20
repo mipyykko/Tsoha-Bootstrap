@@ -50,6 +50,11 @@
         </div> <!-- -->
         {% endif %}
         <div class="panel panel-info">
+            {% if not logged_in and not user.public_profile %}
+            <div class="panel-body">
+                <p>Tämä profiili on yksityinen. Kirjaudu sisään.</p>
+            </div>
+            {% else %}
             <div class="panel-heading">
                 <div class="media-body">
                     <form action="{{base_path}}/user/{{user.id}}/search" method="post" id="search">
@@ -63,6 +68,7 @@
             <div class="panel-body"> <!-- viestialue -->
                 {{content.user_messages(messageinfo, base_path, admin)}}
             </div> <!-- viestialue päättyy -->
+            {% endif %}
         </div>
     </div>
 

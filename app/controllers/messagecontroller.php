@@ -15,9 +15,11 @@ class MessageController extends BaseController {
     public static function index() {
         $messages = Message::all(self::check_logged_in());
         $messageinfo = Message::getMessageInfo($messages);
+        $tags = Tag::findActive();
         View::make('message/index.html', array('messageinfo' => $messageinfo, 
                                                'user' => self::get_user_logged_in(),
-                                               'admin' => self::admin_logged_in()));
+                                               'admin' => self::admin_logged_in(),
+                                               'tags' => $tags));
     }
     
     public static function followed() {
@@ -25,24 +27,29 @@ class MessageController extends BaseController {
         if (!$user) {
             Redirect::to("/");
         }
-        $messages = Message::followed($user->id);
+        $messages = Message::findFollowed($user->id, false);
+        $tags = Tag::findActive();
         $messageinfo = Message::getMessageInfo($messages);
         View::make('message/index.html', array('messageinfo' => $messageinfo,
                                                'user' => $user,
-                                               'admin' => self::admin_logged_in()));
+                                               'admin' => self::admin_logged_in(),
+                                               'tags' => $tags,
+                                               'followed' => array('has_content' => !empty($messages))));
     }
     
     public static function userindex($userid) {
         $user = User::find($userid);
         $user_logged_in = self::get_user_logged_in();
         $userinfo = User::getUserinfo($user); // nää vois pakata myös samaan
-        $messages = Message::findByUser($userid, $user_logged_in != null);
-        $messageinfo = Message::getMessageInfo($messages); 
         $own_page = false;
-        $followed = null;
         if ($user_logged_in) {
-            $own_page = self::get_user_logged_in()->id == $user->id;
+            $own_page = $user_logged_in->id == $user->id;
+            $messages = Message::findFollowed($userid, true);
+        } else {
+            $messages = Message::findByUser($userid, $user_logged_in != null);
         }
+        $messageinfo = Message::getMessageInfo($messages); 
+        $followed = null;
         if (!$own_page && $user_logged_in) {
             $followed = $user_logged_in->follows($userid);
         }

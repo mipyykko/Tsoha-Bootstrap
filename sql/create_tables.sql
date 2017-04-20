@@ -13,7 +13,7 @@ CREATE TABLE Users(
 );
 
 CREATE TABLE Messages(
-    id SERIAL PRIMARY KEY,
+    id SERIAL UNIQUE PRIMARY KEY,
     userid INTEGER REFERENCES Users(id),
     replyid INTEGER REFERENCES Messages(id),
     text varchar(255) NOT NULL,
@@ -23,7 +23,8 @@ CREATE TABLE Messages(
 
 CREATE TABLE Tags(
     text varchar(64) UNIQUE NOT NULL PRIMARY KEY,
-    id SERIAL
+    id SERIAL UNIQUE,
+    last_active timestamp NOT NULL
 );
 
 CREATE TABLE Tagged(

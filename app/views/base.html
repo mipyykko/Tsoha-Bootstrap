@@ -48,6 +48,8 @@
                         <li><a href="{{base_path}}">Etusivu</a></li>
                         {% if not user_logged_in %}
                         <li><a href="{{base_path}}/register">Rekisteröidy</a></li>
+                        {% else %}
+                        <li><a href="{{base_path}}/user/{{user_logged_in.id}}">Oma sivu</a></li>
                         {% endif %}
                     </ul>
                     <div class="nav navbar-nav pull-right">

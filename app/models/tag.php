@@ -45,6 +45,23 @@ class Tag extends BaseModel {
         return null;
     }
 
+    public function findActive() {
+        $rows = Util::dbQuery(
+                'SELECT * FROM Tags WHERE id IN '.
+                '(SELECT tagid FROM Tagged GROUP BY tagid ORDER BY COUNT(*) DESC LIMIT 10) LIMIT 5',
+                array(), true);
+        $tags = array();
+        
+        if ($rows) {
+            foreach ($rows as $row) {
+                $tag = $row['text'];
+                $tags[] = '<a href="/pitterpatter/tag/'.$tag.'">#' . $tag . '</a>';
+            }
+        }
+        
+        return $tags;
+    }
+    
     public function parseAndSave($message) {
         $tags = self::parsetags($message);
 
@@ -57,8 +74,8 @@ class Tag extends BaseModel {
             $foundtag = self::findByText($tag);
             if (!$foundtag) {
                 $row = Util::dbQuery(
-                        'INSERT INTO Tags (text) VALUES (:text) RETURNING id',
-                        array('text' => $tag), false);
+                        'INSERT INTO Tags (text, last_active) VALUES (:text, :last_active) RETURNING id',
+                        array('text' => $tag, 'last_active' => date('Y-m-d H:i:s')), false);
                 $foundtag = new Tag(array('text' => $tag, 'id' => $row['id']));
             }
             Util::dbQuery(
@@ -70,6 +87,7 @@ class Tag extends BaseModel {
     private function newTag($row) {
         $tag = new Tag(array(
             'text' => $row['text'],
+            'last_active' => date('Y-m-d H:i:s'),
             'id' => $row['id']
         ));
         return $tag;
@@ -81,5 +99,4 @@ class Tag extends BaseModel {
 
         return $tags[1];
     }
-
 }
