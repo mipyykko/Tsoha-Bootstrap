@@ -89,7 +89,7 @@ class Message extends BaseModel {
         $rows = Util::dbQuery(
                 'SELECT * FROM Messages WHERE id IN ' .
                 '(SELECT messageid FROM Tagged WHERE tagid = :tagid) '.
-                ($logged_in ? '' : ' AND public_profile = \'t\' ').
+                ($logged_in ? '' : ' AND public_message = \'t\' ').
                 'ORDER BY sent DESC',
                 array('tagid' => $id), true);
         $messages = array();

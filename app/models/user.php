@@ -12,7 +12,7 @@
  * @author pyykkomi
  */
 class User extends BaseModel {
-    public $id, $username, $realname, $password, $description, $email, $administrator,
+    public $id, $username, $realname, $password, $passwordcheck, $description, $email, $administrator,
            $public_profile, $registration_date, $last_seen;
     
     public function __construct($attributes) {
@@ -78,9 +78,11 @@ class User extends BaseModel {
     
     public function update() {
         Util::dbQuery(
-                'UPDATE Users SET realname = :realname, description = :description, email = :email, '.
-                'public_profile = :public_profile, last_seen = :last_seen WHERE id = :id',
-                array('realname' => $this->realname, 'description' => $this->description,
+                'UPDATE Users SET realname = :realname, password = :password, description = :description, '.
+                'email = :email, public_profile = :public_profile, last_seen = :last_seen WHERE id = :id',
+                array('realname' => $this->realname, 
+                      'password' => $this->password, 
+                      'description' => $this->description,
                       'email' => $this->email, 
                       'public_profile' => $this->public_profile ? 't' : 'f',
                       'last_seen' => $this->last_seen,
@@ -179,6 +181,9 @@ class User extends BaseModel {
             $errors['password'] = 'Salasanan tulee olla 4-32 merkkiä pitkä!';
         }
         
+        if ($this->password != $this->passwordcheck) {
+            $errors['passwordcheck'] = 'Salasanat eivät täsmää!';
+        }
         return $errors;
     }
     

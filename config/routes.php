@@ -24,6 +24,14 @@
       UserController::handleregister();
   });
 
+  $routes->get('/password', function() {
+     UserController::passwordchange();
+  });
+  
+  $routes->post('/password', function() {
+      UserController::handlepasswordchange();
+  });
+  
   $routes->post('/login', function() {
       UserController::handlelogin();
   });

@@ -28,6 +28,12 @@
     margin: 0px auto;
 }
 
+#password {
+    left: 50%;
+    width: 800px;
+    margin: 0px auot;
+}
+
 #form-column-left {
     float: left;
     width: 48%;
@@ -38,6 +44,13 @@
 #form-column-right {
     float: right;
     width: 48%;
+    display: block;
+    margin: 20px auto;
+}
+
+#form-center {
+    float: none;
+    width: 50%;
     display: block;
     margin: 20px auto;
 }
@@ -64,4 +77,8 @@
 
 .form-control-feedback{
     line-height: 0px;
+}
+
+.no-underline {
+    text-decoration: none !important;
 }
